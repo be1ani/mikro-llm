@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: models
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/<you>/llm-platform
+        revision: main
+        files:
+          - path: "models/*.yaml"
+  template:
+    metadata:
+      name: "model-{{path.basenameNormalized}}"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/<you>/llm-platform
+        targetRevision: main
+        path: charts/model-server
+        helm:
+          valueFiles:
+            - "../../{{path}}"
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: llm-models
+      syncPolicy:
+        automated: { prune: true, selfHeal: true }
+        syncOptions: [CreateNamespace=true]

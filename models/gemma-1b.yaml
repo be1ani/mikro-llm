@@ -1,0 +1,13 @@
+# models/gemma-1b.yaml
+fullnameOverride: gemma-1b
+args:
+  - "-hf"
+  - "ggml-org/gemma-3-1b-it-GGUF"
+  - "--host"
+  - "0.0.0.0"
+  - "--port"
+  - "8080"
+env:
+  LLAMA_CACHE: /models
+route:
+  pathPrefix: /gemma-1b

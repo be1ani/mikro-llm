@@ -1,0 +1,16 @@
+# charts/model-server/values.yaml
+image:
+  repository: ghcr.io/ggml-org/llama.cpp
+  tag: server          # pin a real tag
+args: []
+env: {}
+resources:
+  requests: { cpu: "2", memory: 4Gi }
+  limits:   { memory: 6Gi }
+modelCache:
+  enabled: true
+  size: 10Gi
+replicas: 1
+route:
+  host: ""
+  pathPrefix: /

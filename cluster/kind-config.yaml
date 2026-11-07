@@ -1,0 +1,22 @@
+# cluster/kind-config.yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: mikro-llm
+nodes:
+  - role: control-plane
+    kubeadmConfigPatches:
+      - |
+        kind: InitConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            node-labels: "ingress-ready=true"
+    extraPortMappings:
+      - containerPort: 30080   # gateway HTTP (NodePort)
+        hostPort: 8081
+        protocol: TCP
+  - role: worker
+    labels:
+      workload: models
+  - role: worker
+    labels:
+      workload: models
