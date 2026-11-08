@@ -1,0 +1,16 @@
+{{- if and .Values.route.enabled .Values.route.requestTimeout }}
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: BackendTrafficPolicy
+metadata:
+  name: {{ include "model-server.fullname" . }}-timeouts
+  labels:
+    {{- include "model-server.labels" . | nindent 4 }}
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: {{ include "model-server.fullname" . }}
+  timeout:
+    http:
+      requestTimeout: {{ .Values.route.requestTimeout }}
+{{- end }}

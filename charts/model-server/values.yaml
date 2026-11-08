@@ -32,6 +32,7 @@ route:
   enabled: true
   pathPrefix: /
   stripPrefix: true
+  requestTimeout: 600s
   gateway:
     name: llm-gateway
     namespace: envoy-gateway-system
