@@ -4,24 +4,26 @@ metadata:
   name: models
   namespace: argocd
 spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
   generators:
     - git:
-        repoURL: https://github.com/<you>/llm-platform
+        repoURL: https://github.com/be1ani/mikro-llm
         revision: main
         files:
           - path: "models/*.yaml"
   template:
     metadata:
-      name: "model-{{path.basenameNormalized}}"
+      name: 'model-{{ .path.filename | trimSuffix ".yaml" }}'
     spec:
       project: default
       source:
-        repoURL: https://github.com/<you>/llm-platform
+        repoURL: https://github.com/be1ani/mikro-llm
         targetRevision: main
         path: charts/model-server
         helm:
           valueFiles:
-            - "../../{{path}}"
+            - '../../{{ .path.path }}/{{ .path.filename }}'
       destination:
         server: https://kubernetes.default.svc
         namespace: llm-models
