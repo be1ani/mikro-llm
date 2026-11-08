@@ -1,16 +1,37 @@
-# charts/model-server/values.yaml
+fullnameOverride: ""
+
 image:
   repository: ghcr.io/ggml-org/llama.cpp
-  tag: server          # pin a real tag
+  tag: server            # pin a real tag once it works
+  pullPolicy: IfNotPresent
+
 args: []
 env: {}
+
+containerPort: 8080
+
+replicas: 1
+
 resources:
   requests: { cpu: "2", memory: 4Gi }
   limits:   { memory: 6Gi }
+
+nodeSelector:
+  workload: models
+
 modelCache:
   enabled: true
   size: 10Gi
-replicas: 1
+  mountPath: /models
+  storageClassName: ""   # empty = cluster default
+
+probes:
+  startupFailureThreshold: 120   # x10s = 20 min for the first download
+
 route:
-  host: ""
+  enabled: true
   pathPrefix: /
+  stripPrefix: true
+  gateway:
+    name: llm-gateway
+    namespace: envoy-gateway-system
